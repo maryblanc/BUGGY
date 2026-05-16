@@ -1,0 +1,1 @@
+tu będzie główny kod esp32, biblioteki, konfiguracje itd

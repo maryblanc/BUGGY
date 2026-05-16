@@ -1,0 +1,3 @@
+- dokumentacja ramek
+- parsery
+- CAN IDs itd. 

@@ -70,11 +70,13 @@ tylko wiedzial ile czasu minelo od uruchomienia sesji, z tym bedzie precyzyjnie 
 - chyba prąd akumulatorów [A]
 - chyba napięcie akumulatorów [V]
 
-pozniej jeszcze parametry wodorowe ale narazie nie
+(pozniej jeszcze parametry wodorowe ale narazie nie)
 
 
 to daje w sumie dwa typy danych telemetrycznych:
+
 --> live telemetry (f=~10-50Hz)
+
     - prąd silnika [A]
     - napięcie silnika [V]
     - RPM silnika 
@@ -82,11 +84,13 @@ to daje w sumie dwa typy danych telemetrycznych:
     - chyba prąd akumulatorów [A]
     - chyba napięcie akumulatorów [V]
 
+
 --> slow telemetry (f=~1-5Hz)
+
     - poziom baterii akumulatorów [%?]
     - przebieg [km]
 
-potencjalnie temperatury itd. (chyba ze jakies mega dynamiczne)
+(potencjalnie temperatury itd. (chyba ze jakies mega dynamiczne))
 
  # 8. PLAN
 

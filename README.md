@@ -86,7 +86,7 @@ to daje w sumie dwa typy danych telemetrycznych:
     - poziom baterii akumulatorów [%?]
     - przebieg [km]
 
-    - potencjalnie temperatury itd. (chyba ze jakies mega dynamiczne)
+potencjalnie temperatury itd. (chyba ze jakies mega dynamiczne)
 
  # 8. PLAN
 

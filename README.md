@@ -22,13 +22,8 @@ To repozytorium będzie prezentowało tworzenie systemu akwizycji danych oraz je
 
 # 3. ARCHITEKTURA NA TEN MOMENT (jak sobie to wyobrazam)
 
-Sensors / CAN / Kelly Controller
-                ↓
-              ESP32
-     ├── SD card logging
-     ├── Dashboard / Display
-     ├── WiFi / Bluetooth - 
-     └── Data processing
+![EcoBuggy Architecture](assets/architecture.jpeg)
+
 # 4. PLANOWANE FUNKCJONALNOŚCI
 
 - zapis do CSV
@@ -114,3 +109,4 @@ to daje w sumie dwa typy danych telemetrycznych:
 
 1. czy kelly wysyla dane przez CAN i czy mozna je odczytac?
 2. jakie dane kelly wysyla przez CAN?
+3. jakie parametry mają iść bezpośrednio z sensorów?

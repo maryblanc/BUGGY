@@ -53,7 +53,7 @@ tylko wiedzial ile czasu minelo od uruchomienia sesji, z tym bedzie precyzyjnie 
 
 # 6. struktura REPO - w kazdym folderze osobny .md ktory mowi mniej wiecej co sie dzieje tam
 
-![EcoBuggy Architecture](assets/repostructure.jpeg)
+![REPO Structure](assets/repostructure.jpeg)
 
 
 # 7. PARAMTERY KTÓRE MAJĄ BYĆ BADANE:

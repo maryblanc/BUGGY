@@ -3,40 +3,35 @@
 #include <SD.h>
 
 #include "Config.h"
+#include "storage/SDCard.h"
+#include "logging/CSVLogger.h"
 
 void setup()
 {
     Serial.begin(115200);
     delay(1000);
 
-    SPI.begin(
-        SD_SCLK_PIN,
-        SD_MISO_PIN,
-        SD_MOSI_PIN,
-        SD_CS_PIN
-    );
-
-    if (!SD.begin(SD_CS_PIN))
+    
+    
+    SDCard sd;
+    
+    if (!sd.begin())
     {
-        Serial.println("SD initialization failed!");
         return;
     }
+    //// Tworze logger i daje mu karte sd
+    //CSVLogger logger(sd);
+    CSVLogger logger(sd);
 
-    Serial.println("SD initialized.");
+    logger.begin();
 
-    File file = SD.open("/LOGS/test.txt", FILE_WRITE);
+    TelemetryFrame frame;
 
-    if (file)
-    {
-        file.println("Hello BUGGY!");
-        file.close();
+    frame.timestamp = 1234;
+    frame.batteryVoltage = 48.7;
+    frame.motorRPM = 3120;
 
-        Serial.println("File written.");
-    }
-    else
-    {
-        Serial.println("Cannot open file.");
-    }
+    logger.write(frame);
 }
 
 void loop()

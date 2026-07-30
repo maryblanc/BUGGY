@@ -5,33 +5,54 @@
 #include "Config.h"
 #include "storage/SDCard.h"
 #include "logging/CSVLogger.h"
+#include "controllers/KellyController.h"
 
 void setup()
 {
     Serial.begin(115200);
     delay(1000);
 
-    
-    
     SDCard sd;
-    
+
     if (!sd.begin())
     {
+        Serial.println("Failed to initialize SD card");
         return;
     }
-    //// Tworze logger i daje mu karte sd
+
+    Serial.println("SD initialized");
+    // Tworze logger i daje mu karte sd
     //CSVLogger logger(sd);
     CSVLogger logger(sd);
+    KellyController controller;
 
-    logger.begin();
+    controller.begin();
 
-    TelemetryFrame frame;
+    if (!logger.begin())
+    {
+        Serial.println("Failed to crerate telemetry.csv.");
+        return;
+    }
+    Serial.println("CSV logger ready.");
 
-    frame.timestamp = 1234;
-    frame.batteryVoltage = 48.7;
-    frame.motorRPM = 3120;
+    while (true)
+    {
+        TelemetryFrame frame = controller.readTelemetry();
 
-    logger.write(frame);
+        if (logger.write(frame))
+        {
+            Serial.println("Telemetry saved");
+        }
+        else
+        {
+            Serial.println("Failed to write telemetry");
+        }
+        
+
+        Serial.println(frame.motorRPM);
+
+        delay(100);
+    }
 }
 
 void loop()

@@ -25,9 +25,14 @@ bool SDCard::begin()
 // To jest implementacja funkcji writeLine, którą wcześniej zadeklarowaliśmy w klasie SDCard
 bool SDCard::writeLine(String filePath, String text)
 {    
-    // FILE_WRITE  - otworzyc do zapisu (jesli nie istnieje, utworz go)
-    File file = SD.open(filePath, FILE_WRITE);
+    
+    // czy te sciezki sie nie wywala na windowsie?
+    if (!SD.exists("/LOGS"))
+    {
+        SD.mkdir("/LOGS");
+    }
 
+    File file = SD.open(filePath, FILE_APPEND);
     // klasa File ma mechanizm ktory sprawdza czy zostal poprawnie otwarty
     if (!file)
     {
@@ -42,7 +47,7 @@ bool SDCard::writeLine(String filePath, String text)
 }
 
 /* 
-File file = SD.open("/LOGS/test.txt", FILE_WRITE);
+File file = SD.open("/LOGS/test.txt", FILE_APPEND);
 
     if (file)
     {

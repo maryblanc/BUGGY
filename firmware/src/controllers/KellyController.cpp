@@ -6,14 +6,18 @@ bool KellyController::begin()
     return true;
 }
 
+
 TelemetryFrame KellyController::readTelemetry()
 {
     TelemetryFrame frame;
 
-    frame.timestamp = millis();
-    frame.motorRPM = 2500;
-    frame.batteryVoltage = 82.4;
-    frame.throttlePercent = 37;
+    uint8_t monitor1[16];
+    uint8_t monitor2[16];
 
+    simulator.readMonitor1(monitor1);
+    simulator.readMonitor2(monitor2);
+    frame = parser.parse(monitor1, monitor2);
+
+    frame.timestamp = millis();
     return frame;
 }

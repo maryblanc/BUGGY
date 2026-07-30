@@ -1,7 +1,7 @@
 #include "logging/CSVLogger.h"
 
-CSVLogger::CSVLogger(SDCard& sd)
-    : sd(sd)
+CSVLogger::CSVLogger(SDCard& sd, const String& filePath)
+    : sd(sd), filePath(filePath)
 {
 }
 

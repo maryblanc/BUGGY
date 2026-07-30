@@ -8,7 +8,7 @@ class CSVLogger
 {
 public:
     // konstruktor z referencja
-    CSVLogger(SDCard& sd); // tu sd to parametr konstruktora
+    CSVLogger(SDCard& sd, const String& filePath); // tu sd to parametr konstruktora
     bool begin();
     // REFERENCJA - Nie tworz kopii tylko korzystaj z tego samego obiektu
     // & oznacza referencje
@@ -16,7 +16,7 @@ public:
 
 private:
     SDCard& sd; // tu sd to pole klasy
-    const String filePath = "/LOGS/telemetry.csv";
+    String filePath;
     String telemetryToCSV(const TelemetryFrame& frame);
     // void - nie zwraca zadnych danych
     void append(String& line, const String& value);

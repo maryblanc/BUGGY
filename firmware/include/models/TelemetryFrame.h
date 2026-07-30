@@ -5,19 +5,22 @@
 enum class Direction{
     Forward,
     Reverse,
-    Unknown
+    Unknown,
+    NotRecognized
 };
 
 enum class HallState{
     Low,
     High,
-    Unknown
+    Unknown,
+    NotRecognized
 };
 
 enum class SwitchState{
     Off,
     On,
-    Unknown
+    Unknown,
+    NotRecognized
 };
 
 struct TelemetryFrame{

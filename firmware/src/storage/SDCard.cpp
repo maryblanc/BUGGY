@@ -45,21 +45,7 @@ bool SDCard::writeLine(String filePath, String text)
     return true;
 
 }
-
-/* 
-File file = SD.open("/LOGS/test.txt", FILE_APPEND);
-
-    if (file)
-    {
-        file - obiekt, println - funkcja biblioteki SD
-        czyli wszędzie jest obiekt.funkcja();
-        file.println("Hello BUGGY!");
-        file.close();
-
-        Serial.println("File written.");
-    }
-    else
-    {
-        Serial.println("Cannot open file.");
-    }
-*/
+bool SDCard::exists(const String& path)
+{
+    return SD.exists(path);
+}

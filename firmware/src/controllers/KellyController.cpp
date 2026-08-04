@@ -18,6 +18,6 @@ TelemetryFrame KellyController::readTelemetry()
     simulator.readMonitor2(monitor2);
     frame = parser.parse(monitor1, monitor2);
 
-    frame.timestamp = millis();
+    
     return frame;
 }

@@ -1,9 +1,17 @@
 #pragma once
 #include <cstdint>
 
+
+// MODUL SD PINY
 constexpr uint8_t SD_CS_PIN   = 5; // zolty
-constexpr uint8_t SD_MOSI_PIN = 23; // bialy
-constexpr uint8_t SD_MISO_PIN = 19; // czerwony
+constexpr uint8_t SD_MOSI_PIN = 19; // fioletowy
+constexpr uint8_t SD_MISO_PIN = 23; // pomaranczowy
 constexpr uint8_t SD_SCLK_PIN  = 18; // zielony
 
 constexpr uint32_t UART_BAUDRATE = 19200;
+
+
+// RTC DS1302
+constexpr uint8_t RTC_RST_PIN  = 27; // brazowy
+constexpr uint8_t RTC_DAT_PIN  = 26; // zolty
+constexpr uint8_t RTC_CLK_PIN  = 25; // zielony

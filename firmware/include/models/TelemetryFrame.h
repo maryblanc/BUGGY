@@ -1,6 +1,9 @@
+// STAN KONTROLERA
+
 #pragma once
 // pragma zapobiega wielokrotnemu wczytaniu pliku
 #include <cstdint>
+#include "DateTime.h"
 
 enum class Direction{
     Forward,
@@ -25,7 +28,7 @@ enum class SwitchState{
 
 struct TelemetryFrame{
 
-    uint32_t timestamp;
+    DateTime timestamp;
 
     // Analog values
     uint8_t throttleRaw;

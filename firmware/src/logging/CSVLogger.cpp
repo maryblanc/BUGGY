@@ -19,7 +19,7 @@ String CSVLogger::telemetryToCSV(const TelemetryFrame& frame)
 {
     String line;
 
-    append(line, String(frame.timestamp));
+    append(line, frame.timestamp.toString());
     append(line, String(frame.throttleRaw));
     append(line, String(frame.throttlePercent));
     append(line, String(frame.brakeRaw));

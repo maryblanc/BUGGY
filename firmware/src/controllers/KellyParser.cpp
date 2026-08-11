@@ -19,7 +19,6 @@ TelemetryFrame KellyParser::parse(const uint8_t monitor1[16],
     frame.motorRPM = (monitor2[2] << 8) | monitor2[3];
     frame.phaseCurrent = (monitor2[0] << 8) | monitor2[1];
 
-    frame.motorRPM = (monitor2[2] << 8) | monitor2[3];
 
     frame.errorFlags = (monitor2[4] << 8) | monitor2[5];
 

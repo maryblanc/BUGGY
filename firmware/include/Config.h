@@ -8,6 +8,7 @@ constexpr uint8_t SD_MOSI_PIN = 19; // fioletowy
 constexpr uint8_t SD_MISO_PIN = 23; // pomaranczowy
 constexpr uint8_t SD_SCLK_PIN  = 18; // zielony
 
+// Kelly UART
 constexpr uint32_t UART_BAUDRATE = 19200;
 
 
@@ -15,3 +16,7 @@ constexpr uint32_t UART_BAUDRATE = 19200;
 constexpr uint8_t RTC_RST_PIN  = 27; // brazowy
 constexpr uint8_t RTC_DAT_PIN  = 26; // zolty
 constexpr uint8_t RTC_CLK_PIN  = 25; // zielony
+
+// UART KELLY
+constexpr uint8_t KELLY_RX_PIN = 16;
+constexpr uint8_t KELLY_TX_PIN = 17;

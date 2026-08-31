@@ -18,5 +18,10 @@ constexpr uint8_t RTC_DAT_PIN  = 26; // zolty
 constexpr uint8_t RTC_CLK_PIN  = 25; // zielony
 
 // UART KELLY
-constexpr uint8_t KELLY_RX_PIN = 16;
-constexpr uint8_t KELLY_TX_PIN = 17;
+constexpr uint8_t KELLY_RX_PIN = 3;
+constexpr uint8_t KELLY_TX_PIN = 1;
+
+// UART NEXTION
+constexpr uint8_t NEXTION_RX_PIN = 16;
+constexpr uint8_t NEXTION_TX_PIN = 17;
+constexpr uint32_t NEXTION_BAUDRATE = 9600;

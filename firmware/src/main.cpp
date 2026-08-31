@@ -2,7 +2,6 @@
 #include <SPI.h>
 #include <SD.h>
 
-
 #include "Config.h"
 #include "storage/SDCard.h"
 #include "logging/CSVLogger.h"
@@ -12,8 +11,10 @@
 #include "rtc/RTCClock.h"
 #include "protocol/UARTPacketBuilder.h"
 #include "controllers/KellyParser.h"
+#include "nextion/NextionDisplay.h"
 
 RTCClock rtc;
+NextionDisplay display;
 
 void setup()
 {
@@ -312,6 +313,9 @@ void setup()
 
 // rtc.setDateTime(dt);
     // ---------- SD ----------
+
+    // DISABLED FOR NEXTION TESTING
+    /*
     SDCard sd;
 
     if (!sd.begin())
@@ -329,6 +333,7 @@ void setup()
 
     KellyController controller;
     controller.begin();
+    display.begin();
 
     if (!logger.begin())
     {
@@ -336,7 +341,11 @@ void setup()
         return;
     }
 
-    Serial.println("CSV logger ready.");
+    Serial.println("CSV logger ready."); */
+
+    KellyController controller;
+    controller.begin();
+    display.begin();
 
     const unsigned long LOGGING_TIME_MS = 10000;
     unsigned long startTime = millis();
@@ -345,10 +354,12 @@ void setup()
     {
         TelemetryFrame frame = controller.readTelemetry();
         frame.timestamp = rtc.now(); // Set the timestamp to the current RTC time
+
+        display.setRPM(frame.motorRPM);
         Serial.println(frame.timestamp.toString());
 
         
-
+/*
         // ---------- Logger ----------
         if (logger.write(frame))
         {
@@ -357,7 +368,7 @@ void setup()
         else
         {
             Serial.println("Failed to write telemetry");
-        }
+        } */
 
         Serial.print("RPM: ");
         Serial.println(frame.motorRPM);

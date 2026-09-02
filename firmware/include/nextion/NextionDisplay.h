@@ -7,11 +7,10 @@ class NextionDisplay
 {
 public:
     void begin();
-
     void setRPM(uint16_t rpm);
 
 private:
-    HardwareSerial nextion = HardwareSerial(2);
+    HardwareSerial& nextion = Serial2;
 
     void sendCommand(const char* command);
 };

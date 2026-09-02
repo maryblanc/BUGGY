@@ -10,11 +10,17 @@ void NextionDisplay::begin()
     );
 
     delay(500);
+
+    while (nextion.available())
+    {
+        nextion.read();
+    }
 }
 
 void NextionDisplay::sendCommand(const char* command)
 {
     nextion.print(command);
+
     nextion.write(0xFF);
     nextion.write(0xFF);
     nextion.write(0xFF);
@@ -27,7 +33,7 @@ void NextionDisplay::setRPM(uint16_t rpm)
     snprintf(
         command,
         sizeof(command),
-        "tTitle.txt=\"%u\"",
+        "tRPM.txt=\"%u\"",
         rpm
     );
 

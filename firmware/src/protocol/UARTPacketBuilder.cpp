@@ -1,5 +1,5 @@
-#include "protocol/UARTPacketBuilder.h"
 
+#include "protocol/UARTPacketBuilder.h"
 
 UARTPacket UARTPacketBuilder::build(const TelemetryFrame& frame) const
 {
@@ -41,15 +41,22 @@ void UARTPacketBuilder::buildMonitor2(
     const TelemetryFrame& frame
 ) const
 {
-    uint16_t phaseCurrent =
-        static_cast<uint16_t>(frame.phaseCurrent);
+    // Kelly KLS RS232 v1.1 - USER_MONITOR2
 
-    packet.monitor2[0] = phaseCurrent >> 8;
-    packet.monitor2[1] = phaseCurrent & 0xFF;
+    // Bytes 0-1: error flags (MSB, LSB)
+    packet.monitor2[0] =
+        static_cast<uint8_t>(frame.errorFlags >> 8);
 
-    packet.monitor2[2] = frame.motorRPM >> 8;
-    packet.monitor2[3] = frame.motorRPM & 0xFF;
+    packet.monitor2[1] =
+        static_cast<uint8_t>(frame.errorFlags & 0xFF);
 
-    packet.monitor2[4] = frame.errorFlags >> 8;
-    packet.monitor2[5] = frame.errorFlags & 0xFF;
+    // Bytes 2-3: motor RPM (MSB, LSB)
+    packet.monitor2[2] =
+        static_cast<uint8_t>(frame.motorRPM >> 8);
+
+    packet.monitor2[3] =
+        static_cast<uint8_t>(frame.motorRPM & 0xFF);
+
+    // Bytes 4-15 are unspecified in the supplied PDF.
+    // They remain zero in simulator-generated data.
 }

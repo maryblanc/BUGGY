@@ -10,7 +10,6 @@ public:
 
     bool readMonitor1(uint8_t* data);
     bool readMonitor2(uint8_t* data);
-    bool readMonitor3(uint8_t* data);
     bool testPacket(const uint8_t* packet, uint8_t* data);
 
 private:
@@ -18,7 +17,6 @@ private:
     static constexpr size_t DATA_SIZE = 16;
     static constexpr uint8_t MONITOR1_CMD = 0x3A;
     static constexpr uint8_t MONITOR2_CMD = 0x3B;
-    static constexpr uint8_t MONITOR3_CMD = 0x3C;
 
     static constexpr unsigned long RESPONSE_TIMEOUT_MS = 300;
     static constexpr uint8_t MAX_RETRIES = 1;

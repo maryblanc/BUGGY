@@ -41,12 +41,7 @@ bool KellyProtocol::readMonitor2(uint8_t* data)
     return readMonitor(MONITOR2_CMD, data);
 }
 
-bool KellyProtocol::readMonitor3(uint8_t* data)
-{
-    Serial.println("[KELLY] Requesting MONITOR 3 (0x3C)");
 
-    return readMonitor(MONITOR3_CMD, data);
-}
 
 bool KellyProtocol::readMonitor(
     uint8_t command,

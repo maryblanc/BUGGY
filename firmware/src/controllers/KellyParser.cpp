@@ -17,10 +17,16 @@ TelemetryFrame KellyParser::parse(const uint8_t monitor1[16],
     // a drugi młodszą. Przesunięcie << 8 umieszcza starszy bajt na właściwej
     // pozycji, a operator | łączy oba bajty w jedną liczbę 16-bitową.
     frame.motorRPM = (monitor2[2] << 8) | monitor2[3];
-    frame.phaseCurrent = (monitor2[0] << 8) | monitor2[1];
+    // Kelly USER_MONITOR2:
+    // data[0] - starszy bajt flag błędów
+    // data[1] - młodszy bajt flag błędów
+    frame.errorFlags =
+        (static_cast<uint16_t>(monitor2[0]) << 8) |
+        monitor2[1];
 
-
-    frame.errorFlags = (monitor2[4] << 8) | monitor2[5];
+    // Prąd fazowy nie jest opisany w USER_MONITOR2.
+    // Wartość tymczasowa do czasu dodania właściwego źródła.
+    frame.phaseCurrent = 0;
 
     // SWITCHE
 

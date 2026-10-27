@@ -36,13 +36,21 @@ struct TelemetryFrame{
 
     float throttlePercent;
     float brakePercent;
+    // Raw values from MONITOR1.
+    // Names are legacy names kept for compatibility.
+    // These values are NOT verified physical units.
 
-    float batteryVoltage;
+    float batteryVoltage; // RAW: monitor1[9]
 
-    float motorTemperature;
-    float controllerTemperature;
+    float motorTemperature;     // RAW: monitor1[10]
+    float controllerTemperature;// RAW: monitor1[11]
 
+    // Mechanical speed in RPM, from MONITOR2[2-3]
+    // czy tu nie bylo problemu z sensorem?
     uint16_t motorRPM;
+    // Not available from documented MONITOR2.
+    // Currently set to 0 by the parser.
+    // Do NOT interpret as a measured current.
     float phaseCurrent;
 
     // Switches

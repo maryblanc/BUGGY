@@ -37,13 +37,13 @@ void printTelemetry(const TelemetryFrame& frame)
 
     // Values below are raw A/D representations.
     // Physical units are not yet verified.
-    Serial.print("Battery raw: ");
+    Serial.print("Battery field (RAW, units unverified): ");
     Serial.println(frame.batteryVoltage);
 
-    Serial.print("Motor temperature raw: ");
+    Serial.print("Motor temperature (RAW, units unverified): ");
     Serial.println(frame.motorTemperature);
 
-    Serial.print("Controller temperature raw: ");
+    Serial.print("Controller temperature (RAW, units unverified: ");
     Serial.println(frame.controllerTemperature);
 
     Serial.println("=============================");

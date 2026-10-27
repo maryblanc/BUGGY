@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <stdint.h>
+#include "protocol/KellyLinkStatus.h"
 
 class KellyProtocol
 {
@@ -11,6 +12,10 @@ public:
     bool readMonitor1(uint8_t* data);
     bool readMonitor2(uint8_t* data);
     bool testPacket(const uint8_t* packet, uint8_t* data);
+    const KellyLinkStatus& getLinkStatus() const
+        {
+            return linkStatus_;
+        }
 
 private:
     static constexpr size_t PACKET_SIZE = 19;
@@ -40,4 +45,5 @@ private:
         const uint8_t* packet,
         uint8_t expectedCommand
     ) const;
+    KellyLinkStatus linkStatus_;
 };

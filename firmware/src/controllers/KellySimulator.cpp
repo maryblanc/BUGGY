@@ -28,12 +28,18 @@ bool KellySimulator::readMonitor1(uint8_t* data)
     return true;
 }
 
+
 bool KellySimulator::readMonitor2(uint8_t* data)
 {
-    // Wyzeruj wszystkie bajty pakietu przed wpisaniem danych
+    if (data == nullptr)
+    {
+        return false;
+    }
+
+    // Clear all 16 payload bytes.
     memset(data, 0, 16);
 
-    // Symuluj rozpędzanie silnika
+    // Simulate motor acceleration.
     simulatedRPM += 100;
 
     if (simulatedRPM > 5000)
@@ -41,16 +47,18 @@ bool KellySimulator::readMonitor2(uint8_t* data)
         simulatedRPM = 0;
     }
 
-    uint16_t current = 321;
-    uint16_t errors = 17;
+    // Example diagnostic error flags.
+    const uint16_t errors = 17;
 
-    data[0] = current >> 8;
-    data[1] = current & 0xFF;
+    // Kelly USER_MONITOR2 (0x3B), RS232 v1.1
+    // data[0-1]: error state, MSB first
+    data[0] = static_cast<uint8_t>(errors >> 8);
+    data[1] = static_cast<uint8_t>(errors & 0xFF);
 
-    data[2] = simulatedRPM >> 8;
-    data[3] = simulatedRPM & 0xFF;
+    // data[2-3]: mechanical speed in RPM, MSB first
+    data[2] = static_cast<uint8_t>(simulatedRPM >> 8);
+    data[3] = static_cast<uint8_t>(simulatedRPM & 0xFF);
 
-    data[4] = errors >> 8;
-    data[5] = errors & 0xFF;
+    // data[4-15]: not specified in supplied documentation.
     return true;
 }

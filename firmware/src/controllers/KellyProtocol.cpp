@@ -1,5 +1,7 @@
 #include "controllers/KellyProtocol.h"
 #include "Config.h"
+#include "protocol/KellyFrameCodec.h"
+#include "protocol/KellyFrameReceiver.h"
 
 bool KellyProtocol::begin()
 {
@@ -56,6 +58,7 @@ bool KellyProtocol::readMonitor(
 
     for (uint8_t attempt = 0; attempt <= MAX_RETRIES; ++attempt)
     {
+        linkStatus_.beginRequest();
         Serial.print("[KELLY] Attempt ");
         Serial.print(attempt + 1);
         Serial.print("/");
@@ -69,6 +72,7 @@ bool KellyProtocol::readMonitor(
 
         if (!sendCommand(command))
         {
+            linkStatus_.markSendError();
             Serial.println("[KELLY] ERROR: failed to send command");
             continue;
         }
@@ -107,13 +111,17 @@ void KellyProtocol::drainReceiveBuffer()
     }
 }
 
+
 bool KellyProtocol::sendCommand(uint8_t command)
 {
-    uint8_t packet[3];
+    uint8_t packet[KellyFrameCodec::REQUEST_SIZE] = {};
 
-    packet[0] = command;
-    packet[1] = 0x00;
-    packet[2] = command;
+    // Build request according to Kelly KLS RS232 v1.1.
+    if (!KellyFrameCodec::buildRequest(command, packet))
+    {
+        Serial.println("[KELLY] ERROR: unsupported command");
+        return false;
+    }
 
     Serial.print("[KELLY] TX: ");
 
@@ -140,161 +148,102 @@ bool KellyProtocol::sendCommand(uint8_t command)
     return written == sizeof(packet);
 }
 
+
 bool KellyProtocol::receivePacket(
     uint8_t expectedCommand,
     uint8_t* data
 )
 {
-    uint8_t packet[PACKET_SIZE];
-
-    unsigned long startTime = millis();
-    size_t received = 0;
-
-    while (received < PACKET_SIZE)
+    if (data == nullptr)
     {
-        if (Serial1.available() > 0)
-        {
-            packet[received] = Serial1.read();
-            received++;
-        }
+        Serial.println("[KELLY] ERROR: null data pointer");
+        return false;
+    }
 
-        if (millis() - startTime >= RESPONSE_TIMEOUT_MS)
-        {
-            Serial.print("[KELLY] TIMEOUT: received ");
-            Serial.print(received);
-            Serial.print("/");
-            Serial.print(PACKET_SIZE);
-            Serial.println(" bytes");
+    KellyFrameReceiver receiver(expectedCommand);
 
-            if (received > 0)
+    const unsigned long startTime = millis();
+
+    size_t receivedBytes = 0;
+
+    Serial.println("[KELLY] Listening for RS232 response...");
+
+    while (millis() - startTime < RESPONSE_TIMEOUT_MS)
+    {
+        while (Serial1.available() > 0)
+        {
+            int incoming = Serial1.read();
+
+            if (incoming < 0)
             {
-                Serial.print("[KELLY] Partial RX: ");
-
-                for (size_t i = 0; i < received; ++i)
-                {
-                    if (packet[i] < 0x10)
-                    {
-                        Serial.print("0");
-                    }
-
-                    Serial.print(packet[i], HEX);
-                    Serial.print(" ");
-                }
-
-                Serial.println();
+                continue;
             }
 
-            return false;
+            uint8_t byte = static_cast<uint8_t>(incoming);
+            receivedBytes++;
+            linkStatus_.recordReceivedByte();
+
+            // Pass each byte to the tested frame receiver.
+            if (receiver.push(byte))
+            {
+                if (receiver.getPayload(data))
+                {
+                    linkStatus_.markSuccess();
+                    Serial.println(
+                        "[KELLY] VALID RESPONSE RECEIVED"
+                    );
+
+                    Serial.print("[KELLY] Bytes read: ");
+                    Serial.println(receivedBytes);
+
+                    Serial.println(
+                        "[KELLY] Checksum and command: OK"
+                    );
+
+                    return true;
+                }
+            }
         }
+
+        // Allow the ESP32 to handle other system tasks.
+        delay(1);
     }
+    linkStatus_.markTimeout();
+    Serial.println("[KELLY] RESPONSE TIMEOUT");
 
-    Serial.print("[KELLY] RX: ");
+    Serial.print("[KELLY] Total bytes received: ");
+    Serial.println(receivedBytes);
 
-    for (size_t i = 0; i < PACKET_SIZE; ++i)
+    if (receivedBytes == 0)
     {
-        if (packet[i] < 0x10)
-        {
-            Serial.print("0");
-        }
-
-        Serial.print(packet[i], HEX);
-        Serial.print(" ");
+        Serial.println(
+            "[KELLY] NO BYTES RECEIVED - check wiring, "
+            "power supply and RS232 converter"
+        );
     }
-
-    Serial.println();
-
-    if (packet[0] != expectedCommand)
+    else
     {
-        Serial.print("[KELLY] ERROR: wrong command echo. Expected 0x");
-        Serial.print(expectedCommand, HEX);
-        Serial.print(", received 0x");
-        Serial.println(packet[0], HEX);
-
-        return false;
+        Serial.println(
+            "[KELLY] Bytes received, but no valid frame found"
+        );
     }
 
-    Serial.println("[KELLY] Command echo: OK");
-
-    if (packet[1] != 0x10)
-    {
-        Serial.print("[KELLY] ERROR: wrong packet length byte: 0x");
-        Serial.println(packet[1], HEX);
-
-        return false;
-    }
-
-    Serial.println("[KELLY] Packet length: OK (16 bytes)");
-
-    uint8_t calculated = calculateChecksum(packet);
-
-    Serial.print("[KELLY] Checksum calculated: 0x");
-
-    if (calculated < 0x10)
-    {
-        Serial.print("0");
-    }
-
-    Serial.println(calculated, HEX);
-
-    Serial.print("[KELLY] Checksum received:   0x");
-
-    if (packet[18] < 0x10)
-    {
-        Serial.print("0");
-    }
-
-    Serial.println(packet[18], HEX);
-
-    if (calculated != packet[18])
-    {
-        Serial.println("[KELLY] ERROR: CHECKSUM INVALID");
-        return false;
-    }
-
-    Serial.println("[KELLY] Checksum: OK");
-
-    for (size_t i = 0; i < DATA_SIZE; ++i)
-    {
-        data[i] = packet[i + 2];
-    }
-
-    Serial.println("[KELLY] Payload extracted");
-
-    return true;
+    return false;
 }
 
-uint8_t KellyProtocol::calculateChecksum(
-    const uint8_t* packet
-) const
-{
-    uint16_t checksum = 0;
 
-    for (size_t i = 0; i < 18; ++i)
-    {
-        checksum += packet[i];
-    }
 
-    return static_cast<uint8_t>(checksum & 0xFF);
-}
 
 bool KellyProtocol::validatePacket(
     const uint8_t* packet,
     uint8_t expectedCommand
 ) const
 {
-    if (packet[0] != expectedCommand)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x10)
-    {
-        return false;
-    }
-
-    uint8_t calculated = calculateChecksum(packet);
-
-    return calculated == packet[18];
+    return KellyFrameCodec::validateResponse(
+        packet,
+        PACKET_SIZE,
+        expectedCommand
+    );
 }
 
 bool KellyProtocol::testPacket(
